@@ -14,6 +14,16 @@ This is a full-stack Notification Service project with both **Frontend** and **B
 
 
 # Fontend
+## 🛠️ Frontend `.env` Configuration
+
+Create a `.env` file in your frontend root directory and add the following:
+
+```env
+VITE_API_BASE_URL=https://your-deployed-backend-url.com
+VITE_API_BASE_URL=http://localhost:5000
+```
+Make sure the URL matches your backend server's address. Use environment-specific URLs when deploying
+
 ## ⚛️ Start the **Frontend**
 
 To launch the React frontend:
@@ -26,7 +36,21 @@ npm run dev
 ![image](https://github.com/user-attachments/assets/c1e7896c-088f-4965-bbf7-4b6ba2eb6b93)
 
 
+
+
+
 # Backend
+
+## ⚙️ Backend `.env` Configuration
+
+Create a `.env` file in your backend root directory and add the following:
+
+```env
+PORT=5000
+MONGODB_URI=mongodb+srv://shivamsingh747804:Pass%40123@cluster0.smh4pwg.mongodb.net/notificationservice
+RABBITMQ_URL=amqp://localhost
+```
+Make sure RabbitMQ is running locally or replace the URL with your deployed RabbitMQ instance if using a cloud service.
 
 ## 🐇 RabbitMQ & Erlang Setup
 
@@ -61,36 +85,89 @@ Ctrl + C, then press A
 ```
 
 🚀 Start RabbitMQ Server
-On Windows (command line):
+## 🧭 Setup RabbitMQ Management Dashboard (Web UI)
 
-Start in the foreground:
+### Step 1: Locate Installation Folder
+- Find the folder where you installed **RabbitMQ** (usually something like `C:\Program Files\RabbitMQ Server\rabbitmq_server-x.y.z`)
+- Copy the full path of the `sbin` directory (e.g., `C:\Program Files\RabbitMQ Server\rabbitmq_server-3.12.1\sbin`)
+
+### Step 2: Enable Management Plugin
+- Open a **new Command Prompt as Administrator**
+- Navigate to the `sbin` folder using the path you copied:
 
 ```bash
-
-rabbitmq-server
+cd "C:\Program Files\RabbitMQ Server\rabbitmq_server-3.12.1\sbin"
 ```
-Run as a background Windows service:
 
-```bash
-
-rabbitmq-service start
+Run this command to enable the management plugin:
 ```
-Stop the service:
-
-```bash
-
-rabbitmq-service stop
-```
-📊 Enable RabbitMQ Management Dashboard (Optional but Recommended)
-To enable the web UI:
-
-```bash
-
 rabbitmq-plugins enable rabbitmq_management
 ```
+You should see output like:
+```
+The following plugins have been enabled:
+  rabbitmq_management
+Applying plugin configuration to rabbitmq-server...
+```
+
+Close all open Command Prompts
+- Open a **new Command Prompt as Administrator**
+- Navigate to the `sbin` folder using the path you copied:
+
+```bash
+cd "C:\Program Files\RabbitMQ Server\rabbitmq_server-3.12.1\sbin"
+```
+
+Type:
+
+```
+rabbitmq-server.bat
+```
+
+
+ Your RabbitMQ server started successfully. The message:
+ ```
+alarm_handler: {set,{{disk_almost_full,"C:\\"},[]}}
+
+
+\=INFO REPORT==== 17-May-2025::22:41:20.014000 ===
+alarm\_handler: {set,{system\_memory\_high\_watermark,\[]}}
+2025-05-17 22:41:26.377000+05:30 \[notice] <0.45.0> Application syslog exited with reason: stopped
+2025-05-17 22:41:26.424000+05:30 \[notice] <0.213.0> Logging: switching to configured handler(s); following messages may not be visible in this log output
+
+## ##      RabbitMQ 4.1.0
+
+##
+
+\##########  Copyright (c) 2007-2025 Broadcom Inc and/or its subsidiaries
+
+######
+
+\##########  Licensed under the MPL 2.0. Website: [https://rabbitmq.com](https://rabbitmq.com)
+
+Erlang:      27.3.4 \[jit]
+TLS Library: OpenSSL - OpenSSL 3.1.0 14 Mar 2023
+Release series support status: see [https://www.rabbitmq.com/release-information](https://www.rabbitmq.com/release-information)
+
+Doc guides:  [https://www.rabbitmq.com/docs](https://www.rabbitmq.com/docs)
+Support:     [https://www.rabbitmq.com/docs/contact](https://www.rabbitmq.com/docs/contact)
+Tutorials:   [https://www.rabbitmq.com/tutorials](https://www.rabbitmq.com/tutorials)
+Monitoring:  [https://www.rabbitmq.com/docs/monitoring](https://www.rabbitmq.com/docs/monitoring)
+Upgrading:   [https://www.rabbitmq.com/docs/upgrade](https://www.rabbitmq.com/docs/upgrade)
+
+Logs: <stdout>
+c:/Users/Ganpati Shivam/AppData/Roaming/RabbitMQ/log/rabbit\@LAPTOP-331ELHSP.log
+
+Config file(s): (none)
+
+Starting broker... completed with 0 plugins.
+```
+
+
+📊 Enable RabbitMQ Management Dashboard (Optional but Recommended)
 Access the dashboard at:
 
-arduino
+
 ```
 http://localhost:15672
 ```
@@ -188,4 +265,35 @@ Request Body Example:
 Retrieve all notifications for a specific user.
 ```http
 GET http://localhost:5000/users/user123/notifications
+```
+
+### 📤 Response (Example)
+
+```json
+{
+  "success": true,
+  "count": 2,
+  "notifications": [
+    {
+      "_id": "66487f1bffdd9e482ef55c9b",
+      "type": "email",
+      "userId": "user123",
+      "recipient": "example@gmail.com",
+      "subject": "Test Subject",
+      "message": "Hello from email",
+      "createdAt": "2025-05-18T08:45:31.871Z",
+      "__v": 0
+    },
+    {
+      "_id": "66487f09ffdd9e482ef55c9a",
+      "type": "sms",
+      "userId": "user123",
+      "recipient": "+911234567890",
+      "subject": "",
+      "message": "Test SMS message",
+      "createdAt": "2025-05-18T08:45:13.474Z",
+      "__v": 0
+    }
+  ]
+}
 ```
